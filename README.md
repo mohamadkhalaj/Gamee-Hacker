@@ -16,3 +16,10 @@ Args                 Description                       Default
 --get-summery    All of your data in gamee             False 
 
 ```
+
+# Installation
+For installing this script and run from anywhere of your terminal, please follow below steps:
+```
+chmod +x install.sh
+sudo ./install.sh
+```
