@@ -1,5 +1,6 @@
 import json
 import re
+
 from hashlib import md5
 from pprint import pprint
 from random import randint
@@ -28,9 +29,13 @@ class GameeHacker:
         return hash
 
     def extract_game_url(self):
-        game_url = re.findall(r"prizes.gamee.com(.*)#", self.url)
-        assert len(game_url) == 1, "Invalid Url."
-        return game_url[0]
+        groups = re.search('prizes.gamee.com\/game-bot\/(.*)-(.{40})', self.url)
+        assert groups != None, 'Invalid Url.'
+        groups = groups.groups()
+        assert len(groups) == 2, 'Invalid Url.'
+        name, token = groups
+        game_url = f'/game-bot/{name}-{token}'
+        return game_url
 
     def create_uuid(self):
         return str(uuid4())

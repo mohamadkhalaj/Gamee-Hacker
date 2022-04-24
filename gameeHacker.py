@@ -2,6 +2,7 @@ import argparse
 import os
 import re
 import sys
+
 from random import randint
 
 from core import GameeHacker
@@ -184,8 +185,8 @@ def main():
     parser = argparse.ArgumentParser(add_help=False)
 
     parser.add_argument("-h", "--help", dest="help", default=False, action="store_true")
-    parser.add_argument("-u", "--url", dest="url", default="", type=str)
-    parser.add_argument("-s", "--score", dest="score", type=int)
+    parser.add_argument("-u", "--url", dest="url", default="", type=str, required=True)
+    parser.add_argument("-s", "--score", dest="score", type=int, required=True)
     parser.add_argument("-t", "--time", dest="time", default=randint(10, 2000), type=int)
     parser.add_argument("--get-rank", dest="rank", default=False, action="store_true")
     parser.add_argument("--get-record", dest="record", default=False, action="store_true")
