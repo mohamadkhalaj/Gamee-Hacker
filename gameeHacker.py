@@ -2,7 +2,6 @@ import argparse
 import os
 import re
 import sys
-
 from random import randint
 
 from core import GameeHacker
@@ -75,6 +74,12 @@ class Cli:
 
         self.help(opts.help)
 
+        self.required_fields = (
+            True
+            if self.required_field(opts)
+            else self.halt("-u/--url URL, -s/--score SCORE are required.", True, self.RED)
+        )
+
         self.url = (
             opts.url if self.is_valid_url(opts.url) else self.halt("Invalid URL.", True, self.RED)
         )
@@ -97,6 +102,11 @@ class Cli:
         supported_platform = plat != "Pocket PC" and (plat != "win32" or "ANSICON" in os.environ)
         is_a_tty = hasattr(sys.stdout, "isatty") and sys.stdout.isatty()
         if not supported_platform or not is_a_tty:
+            return False
+        return True
+
+    def required_field(self, opts):
+        if opts.url == None or opts.score == None:
             return False
         return True
 
@@ -185,8 +195,8 @@ def main():
     parser = argparse.ArgumentParser(add_help=False)
 
     parser.add_argument("-h", "--help", dest="help", default=False, action="store_true")
-    parser.add_argument("-u", "--url", dest="url", default="", type=str, required=True)
-    parser.add_argument("-s", "--score", dest="score", type=int, required=True)
+    parser.add_argument("-u", "--url", dest="url", default="", type=str)
+    parser.add_argument("-s", "--score", dest="score", type=int)
     parser.add_argument("-t", "--time", dest="time", default=randint(10, 2000), type=int)
     parser.add_argument("--get-rank", dest="rank", default=False, action="store_true")
     parser.add_argument("--get-record", dest="record", default=False, action="store_true")
