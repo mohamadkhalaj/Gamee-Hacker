@@ -54,7 +54,7 @@ class GameeHacker:
 
         json_data = json.dumps(data)
         response = requests.post(
-            "https://api.service.gameeapp.com/", headers=headers, data=json_data
+            'https://api.service.gameeapp.com/', headers=headers, data=json_data
         ).json()
         user_creds = response["result"]
         user_auth_token = user_creds["tokens"]["authenticate"]
@@ -101,7 +101,7 @@ class GameeHacker:
         return None
 
     def check_post_status(self):
-        if "error" in str(self.response_data):
+        if not self.response_data or "error" in str(self.response_data):
             return False
         return True
 
