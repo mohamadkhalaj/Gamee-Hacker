@@ -146,7 +146,8 @@ class Cli:
         print(
             "{mix}[{sig}]{end} {statement}".format(
                 sig=sig, mix=cc, end=self.END, statement=statement
-            )
+            ),
+            end="\n\n",
         )
 
     def is_valid_url(self, url):
@@ -171,11 +172,12 @@ class Cli:
     def start_hacking(self):
         self.game_obj.send_score()
         if self.rank:
-            self.print("!", self.game_obj.get_user_rank, "GREEN")
+            self.print("!", "User rank:\n" + str(self.game_obj.get_user_rank()), self.GREEN)
         if self.summery:
-            self.print("!", self.game_obj.get_user_summery, "GREEN")
+            self.print("!", "User summery:", self.RED)
+            self.game_obj.get_user_summery_pprint()
         if self.record:
-            self.print("!", self.game_obj.get_user_record, "GREEN")
+            self.print("!", "User record:\n" + str(self.game_obj.get_user_record()), self.BLUE)
 
 
 def main():

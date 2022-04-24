@@ -54,7 +54,7 @@ class GameeHacker:
 
         json_data = json.dumps(data)
         response = requests.post(
-            'https://api.service.gameeapp.com/', headers=headers, data=json_data
+            "https://api.service.gameeapp.com/", headers=headers, data=json_data
         ).json()
         user_creds = response["result"]
         user_auth_token = user_creds["tokens"]["authenticate"]
@@ -107,6 +107,10 @@ class GameeHacker:
 
     def get_data_pprint(self):
         pprint(self.response_data)
+
+    def get_user_summery_pprint(self):
+        pprint(self.get_user_summery())
+        print("\n")
 
     def get_user_summery(self):
         user_record = self.get_user_record()
