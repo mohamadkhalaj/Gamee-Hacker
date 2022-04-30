@@ -15,19 +15,19 @@ class GameeHacker:
         self.url = url
         self.score = score
         self.play_time = play_time
-        self.game_url = self.extract_game_url()
-        self.checksum = self.create_checksum()
-        self.uuid = self.create_uuid()
-        self.user_auth_token, self.user_id, self.user_personal = self.get_user_credentials()
-        self.game_id, self.release_number = self.get_game_data()
+        self.game_url = self._extract_game_url()
+        self.checksum = self._create_checksum()
+        self.uuid = self._create_uuid()
+        self.user_auth_token, self.user_id, self.user_personal = self._get_user_credentials()
+        self.game_id, self.release_number = self._get_game_data()
         self.response_data = None
 
-    def create_checksum(self):
+    def _create_checksum(self):
         raw_data = f"{self.score}:{self.play_time}:{self.game_url}::{__class__.SALT}"
         hash = md5(raw_data.encode()).hexdigest()
         return hash
 
-    def extract_game_url(self):
+    def _extract_game_url(self):
         groups = re.search("prizes.gamee.com\/game-bot\/(.*)-(.{40})", self.url)
         assert groups != None, "Invalid Url."
         groups = groups.groups()
@@ -36,10 +36,10 @@ class GameeHacker:
         game_url = f"/game-bot/{name}-{token}"
         return game_url
 
-    def create_uuid(self):
+    def _create_uuid(self):
         return str(uuid4())
 
-    def get_user_credentials(self):
+    def _get_user_credentials(self):
         headers = {
             "X-Install-Uuid": self.uuid,
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/99.0",
@@ -66,7 +66,7 @@ class GameeHacker:
         user_personal = user_creds["user"]["personal"]
         return user_auth_token, user_id, user_personal
 
-    def get_game_data(self):
+    def _get_game_data(self):
         headers = {
             "X-Install-Uuid": self.uuid,
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/99.0",
@@ -88,23 +88,26 @@ class GameeHacker:
         release_number = game_data["release"]["number"]
         return game_id, release_number
 
-    def get_user_rank(self):
-        if self.check_post_status():
+    def _get_user_data_constructor(self, data):
+        if self._check_post_status():
             rankings = self.response_data["result"]["surroundingRankings"][0]["ranking"]
             for ranking in rankings:
                 if ranking["user"]["id"] == self.user_id:
-                    return ranking["rank"]
+                    if data == "rank":
+                        return ranking["rank"]
+                    if data == "record":
+                        return ranking["score"]
+                    else:
+                        return None
         return None
+
+    def get_user_rank(self):
+        return self._get_user_data_constructor("rank")
 
     def get_user_record(self):
-        if self.check_post_status():
-            rankings = self.response_data["result"]["surroundingRankings"][0]["ranking"]
-            for ranking in rankings:
-                if ranking["user"]["id"] == self.user_id:
-                    return ranking["score"]
-        return None
+        return self._get_user_data_constructor("record")
 
-    def check_post_status(self):
+    def _check_post_status(self):
         if not self.response_data or "error" in str(self.response_data):
             return False
         return True
