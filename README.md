@@ -14,6 +14,7 @@ Args                 Description                       Default
 --get-rank       Rank of you in current game           False
 --get-record     Your record in current game           False
 --get-summery    All of your data in gamee             False 
+--get-name       Name of game                          False 
 
 ```
 
