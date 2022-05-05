@@ -18,8 +18,13 @@ class GameeHacker:
         self.game_url = self._extract_game_url()
         self.checksum = self._create_checksum()
         self.uuid = self._create_uuid()
-        self.user_auth_token, self.user_id, self.user_personal = self._get_user_credentials()
-        self.game_id, self.release_number = self._get_game_data()
+        self.user_creds = self._get_user_credentials()
+        self.user_auth_token = self.get_user_auth_token()
+        self.user_id = self.get_user_id()
+        self.user_personal = self.get_user_personal()
+        self.game_data = self._get_game_data()
+        self.game_id = self.get_game_id()
+        self.release_number = self.get_release_number()
         self.response_data = None
 
     def _create_checksum(self):
@@ -61,10 +66,16 @@ class GameeHacker:
             "https://api.service.gameeapp.com/", headers=headers, data=json_data
         ).json()
         user_creds = response["result"]
-        user_auth_token = user_creds["tokens"]["authenticate"]
-        user_id = user_creds["user"]["id"]
-        user_personal = user_creds["user"]["personal"]
-        return user_auth_token, user_id, user_personal
+        return user_creds
+
+    def get_user_auth_token(self):
+        return self.user_creds["tokens"]["authenticate"]
+
+    def get_user_id(self):
+        return self.user_creds["user"]["id"]
+
+    def get_user_personal(self):
+        return self.user_creds["user"]["personal"]
 
     def _get_game_data(self):
         headers = {
@@ -84,9 +95,19 @@ class GameeHacker:
             "https://api.service.gameeapp.com/", headers=headers, data=json_data
         ).json()
         game_data = response["result"]["game"]
-        game_id = game_data["id"]
-        release_number = game_data["release"]["number"]
-        return game_id, release_number
+        return game_data
+
+    def get_game_id(self):
+        return self.game_data["id"]
+
+    def get_release_number(self):
+        return self.game_data["release"]["number"]
+
+    def get_game_name(self):
+        return self.game_data["name"]
+
+    def get_game_img(self):
+        return self.game_data["image"]
 
     def _get_user_data_constructor(self, data):
         if self._check_post_status():
