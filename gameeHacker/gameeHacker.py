@@ -17,7 +17,8 @@ Args                 Description                       Default
 
 	--get-rank       Rank of you in current game   False
 	--get-record     Your record in current game   False
-	--get-summery    All of your data in gamee     False 
+	--get-summery    All of your data in gamee     False
+    --get-name       Name of game                  False 
 
 """
 
@@ -93,6 +94,7 @@ class Cli:
         self.record = opts.record
         self.rank = opts.rank
         self.summery = opts.summery
+        self.name = opts.name
 
         self.game_obj = GameeHacker(self.url, self.score, self.time)
         self.start_hacking()
@@ -182,11 +184,13 @@ class Cli:
 
     def start_hacking(self):
         self.game_obj.send_score()
-        if self.rank:
-            self.print("!", "User rank:\n" + str(self.game_obj.get_user_rank()), self.GREEN)
+        if self.name:
+            self.print("!", "Game name:\n" + str(self.game_obj.get_game_name()), self.PURPLE)
         if self.summery:
             self.print("!", "User summery:", self.RED)
             self.game_obj.get_user_summery_pprint()
+        if self.rank:
+            self.print("!", "User rank:\n" + str(self.game_obj.get_user_rank()), self.GREEN)
         if self.record:
             self.print("!", "User record:\n" + str(self.game_obj.get_user_record()), self.BLUE)
 
@@ -201,6 +205,7 @@ def main():
     parser.add_argument("--get-rank", dest="rank", default=False, action="store_true")
     parser.add_argument("--get-record", dest="record", default=False, action="store_true")
     parser.add_argument("--get-summery", dest="summery", default=False, action="store_true")
+    parser.add_argument("--get-name", dest="name", default=False, action="store_true")
 
     options = parser.parse_args()
     parser = Cli(options)
