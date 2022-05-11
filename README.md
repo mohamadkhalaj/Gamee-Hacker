@@ -28,6 +28,7 @@ sudo ./install.sh
 # Run telegram bot
 ```
 export FLASK_APP='models.py'
+cd telegramBot
 flask db init && flask db migrate && flask db upgrade
 python3 telegram_bot.py
 ```
