@@ -3,6 +3,7 @@ import logging
 import random
 import re
 import sys
+from collections import deque
 
 from babel.support import Translations
 from decouple import config as env
@@ -255,9 +256,12 @@ def change_user_language(chat_id, lang):
 def games(update: Update, context: CallbackContext, user_pref=None) -> None:
     _ = Translations.load("locales", user_pref["lang"]).gettext
     user_games = get_all_user_games(user_pref["chat_id"])
-    user_game_leyboard = user_games_keyboard(user_games)
-    chunked_keys = list(divide_chunks(user_game_leyboard, 5))
-    keyboard = [chunked_keys, [_("New game") + " ➕", _("Remove game") + " ❌"], [_("Return") + " ↩️"]]
+    user_game_keyboard = user_games_keyboard(user_games)
+    chunked_keys = list(divide_chunks(user_game_keyboard, 6))
+    keyboard = deque()
+    keyboard.extend(chunked_keys)
+    keyboard.extend([[_("New game") + " ➕", _("Remove game") + " ❌"], [_("Return") + " ↩️"]])
+    keyboard = list(keyboard)
     message = _("Please select your game:")
     reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True)
     update.message.reply_text(message, reply_markup=reply_markup)
