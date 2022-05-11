@@ -105,7 +105,7 @@ def admin_required(func):
 @user_preferences
 def settings(update: Update, context: CallbackContext, user_pref=None) -> None:
     _ = Translations.load("locales", [user_pref["lang"]]).gettext
-    keyboard = [[_("Change language") + " 🗣", _("Contribute" + " 🤝")], [_("Return") + " ↩️"]]
+    keyboard = [[_("Change language") + " 🗣", _("Contribute") + " 🤝"], [_("Return") + " ↩️"]]
     message = _("Please select one item:")
     reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True)
     update.message.reply_text(message, reply_markup=reply_markup)
@@ -115,10 +115,21 @@ def settings(update: Update, context: CallbackContext, user_pref=None) -> None:
 @user_preferences
 def admin_panel(update: Update, context: CallbackContext, user_pref=None) -> None:
     _ = Translations.load("locales", [user_pref["lang"]]).gettext
-    keyboard = [[_("Get users summery") + " 📜", _("Get full data" + " 🗄")], [_("Return") + " ↩️"]]
+    keyboard = [
+        [_("Get users summery") + " 📜", _("Get full data") + " 🗄"],
+        [_("Add admin") + " ➕"],
+        [_("Return") + " ↩️"],
+    ]
     message = _("Please select one item:")
     reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True)
     update.message.reply_text(message, reply_markup=reply_markup)
+
+
+@admin_required
+@user_preferences
+def create_admin(update: Update, context: CallbackContext, user_pref=None) -> None:
+    message = add_admin(user_pref["chat_id"])
+    update.message.reply_text(message)
 
 
 @admin_required
@@ -145,7 +156,7 @@ def users_full(update: Update, context: CallbackContext, user_pref=None) -> None
         user_id = "🆔 " + _("User ID: ")
         username = "👤 " + _("Username: ")
         language = "🗣 " + _("Language: ")
-        message += f"{user_id}{user.id}\n{username}{user.username}\n{language}{user.language}\n"
+        message += f"🔹\n{user_id}{user.id}\n{username}{user.username}\n{language}{user.language}\n"
         message += "\n"
         user_games = Game.query.filter_by(user_id=user.id).all()
         for game in user_games:
@@ -153,7 +164,7 @@ def users_full(update: Update, context: CallbackContext, user_pref=None) -> None
             game_rank = "🏆 " + _("Rank: ")
             game_score = "🎗 " + _("Score: ")
             href = f"<a href='{game.url}'>{game.title}</a>"
-            message += f"\n🔻\n{game_title}{href}\n{game_rank}{game.rank}\n{game_score}{game.score}"
+            message += f"🔻\n{game_title}{href}\n{game_rank}{game.rank}\n{game_score}{game.score}\n"
 
     update.message.reply_text(message, parse_mode="html", disable_web_page_preview=True)
 
@@ -403,9 +414,10 @@ def function_caller(update: Update, context: CallbackContext, user_pref=None) ->
         _("English") + " 🇺🇸": set_en,
         _("New game") + " ➕": add_game,
         _("Admin panel") + " 👤": admin_panel,
-        _("Contribute" + " 🤝"): contribute,
+        _("Contribute") + " 🤝": contribute,
         _("Get users summery") + " 📜": users_summery,
-        _("Get full data" + " 🗄"): users_full,
+        _("Get full data") + " 🗄": users_full,
+        _("Add admin") + " ➕": create_admin,
     }
     function = functions.get(update.message.text, None)
     with app.app_context():
@@ -519,24 +531,31 @@ def main() -> None:
 
 def create_super_user():
     user_id = int(input("Enter telegram numeric ID: "))
+    add_admin(user_id)
+    exit(0)
+
+
+def add_admin(user_id):
     with app.app_context():
         user = User.query.filter_by(id=user_id).first()
+        _ = Translations.load("locales", get_user_language(user_id)).gettext
         if user:
             if user.is_admin:
-                print("This user already is admin.")
+                logger.info(f"This user: '{user_id}' already is admin.")
+                return _("This user already is admin.")
             else:
                 user.is_admin = True
                 db.session.add(user)
                 db.session.commit()
-                print(f'User "{user_id}" previllage escalated successfully.')
+                logger.info(f'User: "{user_id}" previllage escalated successfully.')
+                return _("User previllage escalated successfully.")
         else:
             new_user = User(id=user_id)
             user.is_admin = True
-            db.session.add(user)
+            db.session.add(new_user)
             db.session.commit()
-            print(f"Superuser created successfully.")
-    exit(0)
-    return None
+            logger.info(f"Superuser: '{user_id}' created successfully.")
+            return _("Superuser created successfully.")
 
 
 if len(sys.argv) == 2 and sys.argv[1] == "createsuperuser":
