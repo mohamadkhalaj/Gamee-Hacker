@@ -146,14 +146,14 @@ def users_full(update: Update, context: CallbackContext, user_pref=None) -> None
         username = "👤 " + _("Username: ")
         language = "🗣 " + _("Language: ")
         message += f"{user_id}{user.id}\n{username}{user.username}\n{language}{user.language}\n"
-        message += "🔺🔻🔺🔻\n"
+        message += "\n"
         user_games = Game.query.filter_by(user_id=user.id).all()
         for game in user_games:
             game_title = "🎳 " + _("Title: ")
             game_rank = "🏆 " + _("Rank: ")
             game_score = "🎗 " + _("Score: ")
             href = f"<a href='{game.url}'>{game.title}</a>"
-            message += f"{game_title}{href}\n{game_rank}{game.rank}\n{game_score}{game.score}\n"
+            message += f"\n{game_title}{href}\n{game_rank}{game.rank}\n{game_score}{game.score}\n🔻"
 
     update.message.reply_text(message, parse_mode="html", disable_web_page_preview=True)
 
