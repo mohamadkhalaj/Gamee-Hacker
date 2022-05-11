@@ -112,7 +112,7 @@ def admin_panel(update: Update, context: CallbackContext, user_pref=None) -> Non
 @user_preferences
 def settings(update: Update, context: CallbackContext, user_pref=None) -> None:
     _ = Translations.load("locales", [user_pref["lang"]]).gettext
-    keyboard = [[_("Change language") + " 🗣"], [_("Return") + " ↩️"]]
+    keyboard = [[_("Change language") + " 🗣"], [_("Contribute" + " 🤝")], [_("Return") + " ↩️"]]
     message = _("Please select one item:")
     reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True)
     update.message.reply_text(message, reply_markup=reply_markup)
@@ -335,6 +335,17 @@ def is_in_user_games(update: Update, context: CallbackContext, user_pref=None) -
     return False
 
 
+def contribute(update: Update, context: CallbackContext, user_pref=None) -> None:
+    _ = Translations.load("locales", user_pref["lang"]).gettext
+    message = _("First if you enjoyed this bot please star 🌟 us on our github:")
+    github_url = "<a href='https://github.com/mohamadkhalaj/Gamee-Hacker'>Link</a>"
+    message += "\n\n" + github_url + "\n\n"
+    message += _(
+        "You can make a pull request and add your features or help for translating and add yout native language to this bot."
+    )
+    update.message.reply_text(message, parse_mode="html")
+
+
 @user_preferences
 def function_caller(update: Update, context: CallbackContext, user_pref=None) -> None:
     """Echo the user message."""
@@ -350,6 +361,7 @@ def function_caller(update: Update, context: CallbackContext, user_pref=None) ->
         _("English") + " 🇺🇸": set_en,
         _("New game") + " ➕": add_game,
         _("Admin panel") + " 👤": admin_panel,
+        _("Contribute" + " 🤝"): contribute,
     }
     function = functions.get(update.message.text, None)
     with app.app_context():
