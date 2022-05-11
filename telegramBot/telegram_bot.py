@@ -448,6 +448,30 @@ def main() -> None:
     # start_polling() is non-blocking and will stop the bot gracefully.
     updater.idle()
 
+def create_super_user():
+    user_id = int(input('Enter telegram numeric ID: '))
+    with app.app_context():
+        user = User.query.filter_by(id=user_id).first()
+        if user:
+            if user.is_admin:
+                print('This user already is admin.')
+            else:
+                user.is_admin = True
+                db.session.add(user)
+                db.session.commit()
+                print(f'User "{user_id}" previllage escalated successfully.')
+        else:
+            new_user = User(id=user_id)
+            user.is_admin = True
+            db.session.add(user)
+            db.session.commit()
+            print(f'Superuser created successfully.')
+    exit(0)
+    return None
+
+
+if len(sys.argv) == 2 and sys.argv[1] == 'createsuperuser':
+    create_super_user()
 
 if __name__ == "__main__":
     main()
