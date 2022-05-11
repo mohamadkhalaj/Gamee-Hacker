@@ -102,13 +102,6 @@ def admin_required(func):
     return wrapper_admin_required
 
 
-@admin_required
-@user_preferences
-def admin_panel(update: Update, context: CallbackContext, user_pref=None) -> None:
-    _ = Translations.load("locales", [user_pref["lang"]]).gettext
-    update.message.reply_text(_("Under construction."))
-
-
 @user_preferences
 def settings(update: Update, context: CallbackContext, user_pref=None) -> None:
     _ = Translations.load("locales", [user_pref["lang"]]).gettext
@@ -116,6 +109,36 @@ def settings(update: Update, context: CallbackContext, user_pref=None) -> None:
     message = _("Please select one item:")
     reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True)
     update.message.reply_text(message, reply_markup=reply_markup)
+
+
+@admin_required
+@user_preferences
+def admin_panel(update: Update, context: CallbackContext, user_pref=None) -> None:
+    _ = Translations.load("locales", [user_pref["lang"]]).gettext
+    keyboard = [[_("Get users summery") + " 📜", _("Get full data" + " 🗄")], [_("Return") + " ↩️"]]
+    message = _("Please select one item:")
+    reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True)
+    update.message.reply_text(message, reply_markup=reply_markup)
+
+
+@admin_required
+@user_preferences
+def users_summery(update: Update, context: CallbackContext, user_pref=None) -> None:
+    _ = Translations.load("locales", [user_pref["lang"]]).gettext
+    number_of_users_messages = "👤 " + _("Number of users: ")
+    number_of_games_messages = "🧩 " + _("Number of games: ")
+    number_of_users = User.query.count()
+    number_of_games = Game.query.count()
+    message = (
+        f"{number_of_users_messages}{number_of_users}\n{number_of_games_messages}{number_of_games}"
+    )
+    update.message.reply_text(message)
+
+
+@admin_required
+@user_preferences
+def users_full(update: Update, context: CallbackContext, user_pref=None) -> None:
+    _ = Translations.load("locales", [user_pref["lang"]]).gettext
 
 
 @user_preferences
@@ -364,6 +387,8 @@ def function_caller(update: Update, context: CallbackContext, user_pref=None) ->
         _("New game") + " ➕": add_game,
         _("Admin panel") + " 👤": admin_panel,
         _("Contribute" + " 🤝"): contribute,
+        _("Get users summery") + " 📜": users_summery,
+        _("Get full data" + " 🗄"): users_full,
     }
     function = functions.get(update.message.text, None)
     with app.app_context():
