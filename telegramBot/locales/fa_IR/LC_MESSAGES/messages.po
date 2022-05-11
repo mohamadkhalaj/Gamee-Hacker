@@ -79,7 +79,7 @@ msgstr "انگلیسی"
 
 #: telegram_bot.py:217
 msgid "Language changed to persian."
-msgstr "زبان به فارسی تغییر یافت٫"
+msgstr "زبان به فارسی تغییر یافت."
 
 #: telegram_bot.py:235 telegram_bot.py:308
 msgid "New game"
