@@ -24,3 +24,10 @@ For installing this script and run from anywhere of your terminal, please follow
 chmod +x install.sh
 sudo ./install.sh
 ```
+
+# Run telegram bot
+```
+export FLASK_APP='models.py'
+flask db init && flask db migrate && flask db upgrade
+python3 telegram_bot.py
+```
