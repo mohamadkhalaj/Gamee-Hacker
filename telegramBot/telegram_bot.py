@@ -338,11 +338,12 @@ def is_in_user_games(update: Update, context: CallbackContext, user_pref=None) -
 @user_preferences
 def contribute(update: Update, context: CallbackContext, user_pref=None) -> None:
     _ = Translations.load("locales", user_pref["lang"]).gettext
-    message = _("First if you enjoyed this bot please star 🌟 us on our github:")
-    github_url = "<a href='https://github.com/mohamadkhalaj/Gamee-Hacker'>Link</a>"
+    message = _("First if you enjoyed this bot please star 🌟 us on our github: ")
+    link = _("Link") + " 🔗"
+    github_url = f"<a href='https://github.com/mohamadkhalaj/Gamee-Hacker'>{link}</a>"
     message += github_url + "\n"
     message += _(
-        "You can make a pull request and add your features or help for translating and add yout native language to this bot."
+        "You can make a pull request and add your features, or help for translating and add your native language to this bot."
     )
     update.message.reply_text(message, parse_mode="html", disable_web_page_preview=True)
 
