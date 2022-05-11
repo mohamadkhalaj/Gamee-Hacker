@@ -32,3 +32,9 @@ cd telegramBot
 flask db init && flask db migrate && flask db upgrade
 python3 telegram_bot.py
 ```
+
+## Create superuser
+Run below command and enter your telegram numeric id
+```
+python3 telegram_bot.py createsuperuser
+```
