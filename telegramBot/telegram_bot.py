@@ -153,7 +153,7 @@ def users_full(update: Update, context: CallbackContext, user_pref=None) -> None
             game_rank = "🏆 " + _("Rank: ")
             game_score = "🎗 " + _("Score: ")
             href = f"<a href='{game.url}'>{game.title}</a>"
-            message += f"\n{game_title}{href}\n{game_rank}{game.rank}\n{game_score}{game.score}\n🔻"
+            message += f"\n🔻\n{game_title}{href}\n{game_rank}{game.rank}\n{game_score}{game.score}"
 
     update.message.reply_text(message, parse_mode="html", disable_web_page_preview=True)
 
