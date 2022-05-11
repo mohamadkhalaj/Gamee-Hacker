@@ -131,6 +131,9 @@ def start_hacking(update: Update, context: CallbackContext, user_pref=None) -> N
     chat_id = user_pref["chat_id"]
     url = get_user_last_url(chat_id)
     if url:
+        logger.info(
+            f"START HACKING: user: {user_pref['chat_id']} username:{user_pref['username']}"
+        )
         message = _("Please wait a moment...")
         update.message.reply_text(message)
         game_obj = GameeHacker(url, score, random.randint(10, 1000))
@@ -146,12 +149,16 @@ def start_hacking(update: Update, context: CallbackContext, user_pref=None) -> N
             with app.app_context():
                 new_game = create_new_game(url, chat_id, image, name, rank, record)
                 send_user_game_info(update, context, user_pref, new_game)
+        games(update, context)
     else:
         message = _("Please send game URL:")
         update.message.reply_text(message)
 
 
 def send_user_game_info(update, context, user_pref, game_object):
+    logger.info(
+        f"SEND USER GAME INFO: user: {user_pref['chat_id']} username:{user_pref['username']}"
+    )
     name = game_object.title
     record = game_object.score
     rank = game_object.rank
@@ -179,6 +186,7 @@ def get_rank_emoji(rank):
 
 
 def create_new_game(url, chat_id, image, name, rank, record):
+    logger.info(f"NEW GAME CREATED: {chat_id}")
     new_game = Game(user_id=chat_id, title=name, url=url, photo_url=image, score=record, rank=rank)
     db.session.add(new_game)
     db.session.commit()
@@ -256,6 +264,9 @@ def view_game(update: Update, context: CallbackContext, user_pref=None) -> None:
 
 
 def set_user_last_url(user_pref, game_object):
+    logger.info(
+        f"SET USER LAST URL: user: {user_pref['chat_id']} username:{user_pref['username']}"
+    )
     with app.app_context():
         new_user = User.query.filter_by(id=user_pref["chat_id"]).first()
         new_user.last_url = game_object.url
@@ -310,13 +321,20 @@ def function_caller(update: Update, context: CallbackContext, user_pref=None) ->
     function = functions.get(update.message.text, None)
     with app.app_context():
         if function:
+            logger.info(
+                f"{function.__name__}: user: {user_pref['chat_id']} username:{user_pref['username']}"
+            )
             if not function in user.return_stack and function not in not_in_stack:
+                logger.info(
+                    f"APPEND TO STACK: user: {user_pref['chat_id']} username:{user_pref['username']}"
+                )
                 stack = user.return_stack
                 stack.append(function)
                 db.session.add(user)
                 db.session.commit()
             function(update, context)
         elif update.message.text == _("Return") + " ↩️":
+            logger.info(f"RETURN: user: {user_pref['chat_id']} username:{user_pref['username']}")
             try:
                 stack = user.return_stack
                 stack.pop()
@@ -326,12 +344,22 @@ def function_caller(update: Update, context: CallbackContext, user_pref=None) ->
             except IndexError:
                 main_menu(update, context)
         elif is_url(update.message.text):
+            logger.info(f"GAME URL: user: {user_pref['chat_id']} username:{user_pref['username']}")
             get_game_url(update, context)
         elif is_score(update.message.text):
+            logger.info(
+                f"GAME SCORE: user: {user_pref['chat_id']} username:{user_pref['username']}"
+            )
             start_hacking(update, context)
         elif is_in_user_games(update, context):
+            logger.info(
+                f"VIEW GAME: user: {user_pref['chat_id']} username:{user_pref['username']}"
+            )
             view_game(update, context)
         else:
+            logger.info(
+                f"COMMAND NOT FOUND: user: {user_pref['chat_id']} username:{user_pref['username']}"
+            )
             message = f"❌❗️ '{update.message.text}'"
             update.message.reply_text(message)
 
@@ -360,6 +388,13 @@ def create_user(user_pref):
             new_user = User(id=chat_id, username=username, return_stack=[main_menu], language=lang)
             db.session.add(new_user)
             db.session.commit()
+            logger.info(
+                f"ADDING USER TO DB: user: {user_pref['chat_id']} username:{user_pref['username']} added."
+            )
+        else:
+            logger.info(
+                f"ADDING USER TO DB: user: {user_pref['chat_id']} username:{user_pref['username']} already exists."
+            )
 
 
 # Define a few command handlers. These usually take the two arguments update and
@@ -367,6 +402,7 @@ def create_user(user_pref):
 @user_preferences
 def start(update: Update, context: CallbackContext, user_pref=None) -> None:
     """Send a message when the command /start is issued."""
+    logger.info(f"Bot started by user: {user_pref['chat_id']} username:{user_pref['username']}")
     create_user(user_pref)
     main_menu(update, context)
 
