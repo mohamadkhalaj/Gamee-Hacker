@@ -32,6 +32,9 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+def divide_chunks(keyboard, n):
+    for i in range(0, len(keyboard), n): 
+        yield keyboard[i:i + n]
 
 def is_url(str):
     regex = (
@@ -253,7 +256,8 @@ def games(update: Update, context: CallbackContext, user_pref=None) -> None:
     _ = Translations.load("locales", user_pref["lang"]).gettext
     user_games = get_all_user_games(user_pref["chat_id"])
     user_game_leyboard = user_games_keyboard(user_games)
-    keyboard = [user_game_leyboard, [_("New game") + " ➕", _("Return") + " ↩️"]]
+    chunked_keys = list(divide_chunks(user_game_leyboard, 5))
+    keyboard = [chunked_keys, [_("New game") + " ➕", _("Remove game") + " ❌"], [_("Return") + " ↩️"]]
     message = _("Please select your game:")
     reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True)
     update.message.reply_text(message, reply_markup=reply_markup)
