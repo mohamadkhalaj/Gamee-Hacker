@@ -155,6 +155,18 @@ def start_hacking(update: Update, context: CallbackContext, user_pref=None) -> N
         update.message.reply_text(message)
 
 
+def get_bot_username(context):
+    data = context.bot.get_me()
+    return data["username"]
+
+
+def add_footer(context, message):
+    username = f"@{get_bot_username(context)}"
+    message += "\n\n"
+    message += username
+    return message
+
+
 def send_user_game_info(update, context, user_pref, game_object):
     logger.info(
         f"SEND USER GAME INFO: user: {user_pref['chat_id']} username:{user_pref['username']}"
@@ -164,8 +176,9 @@ def send_user_game_info(update, context, user_pref, game_object):
     rank = game_object.rank
     image = game_object.photo_url
     message = user_game_status(user_pref["lang"], name, rank, record)
+    new_message = add_footer(context, message)
     context.bot.send_photo(
-        photo=image, caption=message, parse_mode="html", chat_id=update.message.chat_id
+        photo=image, caption=new_message, parse_mode="html", chat_id=update.message.chat_id
     )
 
 
