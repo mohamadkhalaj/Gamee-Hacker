@@ -33,9 +33,11 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+
 def divide_chunks(keyboard, n):
-    for i in range(0, len(keyboard), n): 
-        yield keyboard[i:i + n]
+    for i in range(0, len(keyboard), n):
+        yield keyboard[i : i + n]
+
 
 def is_url(str):
     regex = (
@@ -98,6 +100,13 @@ def admin_required(func):
             args[0].message.reply_text(_("Access forbidden."))
 
     return wrapper_admin_required
+
+
+@admin_required
+@user_preferences
+def admin_panel(update: Update, context: CallbackContext, user_pref=None) -> None:
+    _ = Translations.load("locales", [user_pref["lang"]]).gettext
+    update.message.reply_text(_("Under construction."))
 
 
 @user_preferences
@@ -308,6 +317,8 @@ def change_language(update: Update, context: CallbackContext, user_pref=None) ->
 def main_menu(update: Update, context: CallbackContext, user_pref=None) -> None:
     _ = Translations.load("locales", user_pref["lang"]).gettext
     keyboard = [[_("Settings") + " ⚙️", _("Games") + " 🧩"]]
+    if get_user(user_pref["chat_id"]).is_admin:
+        keyboard.append([_("Admin panel") + " 👤"])
     message = _("Please select one item:")
     reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True)
     update.message.reply_text(message, reply_markup=reply_markup)
@@ -338,6 +349,7 @@ def function_caller(update: Update, context: CallbackContext, user_pref=None) ->
         _("فارسی") + " 🇮🇷": set_fa,
         _("English") + " 🇺🇸": set_en,
         _("New game") + " ➕": add_game,
+        _("Admin panel") + " 👤": admin_panel,
     }
     function = functions.get(update.message.text, None)
     with app.app_context():
@@ -448,13 +460,14 @@ def main() -> None:
     # start_polling() is non-blocking and will stop the bot gracefully.
     updater.idle()
 
+
 def create_super_user():
-    user_id = int(input('Enter telegram numeric ID: '))
+    user_id = int(input("Enter telegram numeric ID: "))
     with app.app_context():
         user = User.query.filter_by(id=user_id).first()
         if user:
             if user.is_admin:
-                print('This user already is admin.')
+                print("This user already is admin.")
             else:
                 user.is_admin = True
                 db.session.add(user)
@@ -465,12 +478,12 @@ def create_super_user():
             user.is_admin = True
             db.session.add(user)
             db.session.commit()
-            print(f'Superuser created successfully.')
+            print(f"Superuser created successfully.")
     exit(0)
     return None
 
 
-if len(sys.argv) == 2 and sys.argv[1] == 'createsuperuser':
+if len(sys.argv) == 2 and sys.argv[1] == "createsuperuser":
     create_super_user()
 
 if __name__ == "__main__":
