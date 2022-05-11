@@ -133,6 +133,13 @@ class GameeHacker:
             return False
         return True
 
+    def check_ban_status(self):
+        data = self.response_data
+        status = data.get("error", {}).get("message", None)
+        if status:
+            return True
+        return False
+
     def get_data_pprint(self):
         pprint(self.response_data)
 
