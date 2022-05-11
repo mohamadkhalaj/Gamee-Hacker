@@ -257,7 +257,7 @@ def games(update: Update, context: CallbackContext, user_pref=None) -> None:
     _ = Translations.load("locales", user_pref["lang"]).gettext
     user_games = get_all_user_games(user_pref["chat_id"])
     user_game_keyboard = user_games_keyboard(user_games)
-    chunked_keys = list(divide_chunks(user_game_keyboard, 6))
+    chunked_keys = list(divide_chunks(user_game_keyboard, 4))
     keyboard = deque()
     keyboard.extend(chunked_keys)
     keyboard.extend([[_("New game") + " ➕", _("Remove game") + " ❌"], [_("Return") + " ↩️"]])
