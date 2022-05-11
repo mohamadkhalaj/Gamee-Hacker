@@ -335,6 +335,7 @@ def is_in_user_games(update: Update, context: CallbackContext, user_pref=None) -
     return False
 
 
+@user_preferences
 def contribute(update: Update, context: CallbackContext, user_pref=None) -> None:
     _ = Translations.load("locales", user_pref["lang"]).gettext
     message = _("First if you enjoyed this bot please star 🌟 us on our github:")
