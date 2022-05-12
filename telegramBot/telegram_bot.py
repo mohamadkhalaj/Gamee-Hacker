@@ -7,9 +7,15 @@ from collections import deque
 
 from babel.support import Translations
 from decouple import config as env
-from telegram import ReplyKeyboardMarkup, Update
+from telegram import (
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    ReplyKeyboardMarkup,
+    Update,
+)
 from telegram.ext import (
     CallbackContext,
+    CallbackQueryHandler,
     CommandHandler,
     Filters,
     MessageHandler,
@@ -64,12 +70,27 @@ def is_score(str):
         return False
 
 
+def check_add_admin_pattern(str):
+    str = str.strip()
+    regex = "^admin [0-9]+$"
+    p = re.compile(regex)
+    if re.search(p, str):
+        return True
+    else:
+        return False
+
+
 def user_preferences(func):
     @functools.wraps(func)
     def wrapper_user_preferences(*args, **kwargs):
-        chat_id = int(args[0]["message"]["chat"]["id"])
-        username = args[0]["message"]["chat"]["username"]
-        message = args[0]["message"]["text"]
+        try:
+            chat_id = int(args[0]["message"]["chat"]["id"])
+            username = args[0]["message"]["chat"]["username"]
+            message = args[0]["message"]["text"]
+        except TypeError:
+            chat_id = int(args[0]["callback_query"]["message"]["chat"]["id"])
+            username = args[0]["callback_query"]["message"]["chat"]["username"]
+            message = args[0]["callback_query"]["message"]["text"]
         language = get_user_language(chat_id)
         user_pref = {
             "lang": language,
@@ -128,7 +149,16 @@ def admin_panel(update: Update, context: CallbackContext, user_pref=None) -> Non
 @admin_required
 @user_preferences
 def create_admin(update: Update, context: CallbackContext, user_pref=None) -> None:
-    message = add_admin(user_pref["chat_id"])
+    _ = Translations.load("locales", [user_pref["lang"]]).gettext
+    message = _("Please send admin telegram_id in following format: admin <ID>")
+    update.message.reply_text(message)
+
+
+@admin_required
+@user_preferences
+def create_admin_telegram(update: Update, context: CallbackContext, user_pref=None) -> None:
+    id = user_pref["message"].replace("admin", "").strip()
+    message = add_admin(id)
     update.message.reply_text(message)
 
 
@@ -336,7 +366,11 @@ def games(update: Update, context: CallbackContext, user_pref=None) -> None:
     keyboard = list(keyboard)
     message = _("Please select your game:")
     reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True)
-    update.message.reply_text(message, reply_markup=reply_markup)
+    try:
+        update.message.reply_text(message, reply_markup=reply_markup)
+    except AttributeError:
+        query = update.callback_query
+        query.message.reply_text(message, reply_markup=reply_markup)
 
 
 def user_games_keyboard(games):
@@ -430,6 +464,7 @@ def function_caller(update: Update, context: CallbackContext, user_pref=None) ->
         _("Get users summery") + " 📜": users_summery,
         _("Get full data") + " 🗄": users_full,
         _("Add admin") + " ➕": create_admin,
+        _("Remove game") + " ❌": remove_game,
     }
     function = functions.get(update.message.text, None)
     with app.app_context():
@@ -469,6 +504,8 @@ def function_caller(update: Update, context: CallbackContext, user_pref=None) ->
                 f"VIEW GAME: user: {user_pref['chat_id']} username:{user_pref['username']}"
             )
             view_game(update, context)
+        elif check_add_admin_pattern(update.message.text):
+            create_admin_telegram(update, context)
         else:
             logger.info(
                 f"COMMAND NOT FOUND: user: {user_pref['chat_id']} username:{user_pref['username']}"
@@ -489,6 +526,55 @@ def get_user(chat_id):
     with app.app_context():
         user = User.query.filter_by(id=chat_id).first()
         return user
+
+
+@user_preferences
+def remove_game(update: Update, context: CallbackContext, user_pref=None) -> None:
+    _ = Translations.load("locales", user_pref["lang"]).gettext
+    user_games = get_all_user_games(user_pref["chat_id"])
+    if user_games:
+        user_game_inline_keyboard = create_inline_keyboard_button(user_games)
+        keyboard = list(divide_chunks(user_game_inline_keyboard, 4))
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        update.message.reply_text(_("Please select one item:"), reply_markup=reply_markup)
+    else:
+        message = _("There is not any games to show.")
+        update.message.reply_text(message)
+
+
+def create_inline_keyboard_button(games):
+    key = []
+    for game in games:
+        temp = InlineKeyboardButton(str(game.title), callback_data=game.id)
+        key.append(temp)
+    return key
+
+
+@user_preferences
+def call_back(update: Update, context: CallbackContext, user_pref=None) -> None:
+    _ = Translations.load("locales", user_pref["lang"]).gettext
+    query = update.callback_query
+    query.answer()
+    game_id = query.data
+    with app.app_context():
+        game = get_game_by_id(game_id)
+        if game:
+            game_name = game.title
+            db.session.delete(game)
+            db.session.commit()
+            remove_message = _("removed successfully.")
+            query.edit_message_text(text=f"{game_name} {remove_message}")
+        else:
+            not_found_message = _("not found!")
+            query.edit_message_text(text=f"{game_name} {not_found_message}")
+        games(update, context)
+
+
+def get_game_by_id(id):
+    game = Game.query.filter_by(id=id).first()
+    if game:
+        return game
+    return None
 
 
 def create_user(user_pref):
@@ -530,6 +616,7 @@ def main() -> None:
 
     # on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler("start", start))
+    dispatcher.add_handler(CallbackQueryHandler(call_back))
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, function_caller))
 
     # Start the Bot
@@ -563,7 +650,9 @@ def add_admin(user_id):
                 return _("User previllage escalated successfully.")
         else:
             new_user = User(id=user_id)
-            user.is_admin = True
+            new_user.is_admin = True
+            new_user.return_stack = [main_menu]
+            new_user.language = "en_US"
             db.session.add(new_user)
             db.session.commit()
             logger.info(f"Superuser: '{user_id}' created successfully.")
