@@ -54,7 +54,7 @@ msgstr "افزودن ادمین"
 
 #: telegram_bot.py:153
 msgid "Please send admin telegram_id in following format: admin <ID>"
-msgstr "لطفا آی دی ادمین را به فرمت روبرو ارسال کنید: admin <ID>"
+msgstr "لطفا آی دی ادمین را به فرمت روبرو ارسال کنید: admin ID"
 
 #: telegram_bot.py:169
 msgid "Number of users: "
