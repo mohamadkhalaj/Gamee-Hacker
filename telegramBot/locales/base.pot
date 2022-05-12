@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-05-11 19:56+0200\n"
+"POT-Creation-Date: 2022-05-12 11:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,173 +17,190 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.1\n"
 
-#: telegram_bot.py:100
+#: telegram_bot.py:121
 msgid "Access forbidden."
 msgstr ""
 
-#: telegram_bot.py:108 telegram_bot.py:411
+#: telegram_bot.py:129 telegram_bot.py:457
 msgid "Change language"
 msgstr ""
 
-#: telegram_bot.py:108 telegram_bot.py:417
+#: telegram_bot.py:129 telegram_bot.py:463
 msgid "Contribute"
 msgstr ""
 
-#: telegram_bot.py:108 telegram_bot.py:121 telegram_bot.py:291
-#: telegram_bot.py:303 telegram_bot.py:323 telegram_bot.py:361
-#: telegram_bot.py:437
+#: telegram_bot.py:129 telegram_bot.py:142 telegram_bot.py:333
+#: telegram_bot.py:345 telegram_bot.py:365 telegram_bot.py:407
+#: telegram_bot.py:484
 msgid "Return"
 msgstr ""
 
-#: telegram_bot.py:109 telegram_bot.py:123 telegram_bot.py:373
+#: telegram_bot.py:130 telegram_bot.py:144 telegram_bot.py:419
+#: telegram_bot.py:539
 msgid "Please select one item:"
 msgstr ""
 
-#: telegram_bot.py:119 telegram_bot.py:418
+#: telegram_bot.py:140 telegram_bot.py:464
 msgid "Get users summery"
 msgstr ""
 
-#: telegram_bot.py:119 telegram_bot.py:419
+#: telegram_bot.py:140 telegram_bot.py:465
 msgid "Get full data"
 msgstr ""
 
-#: telegram_bot.py:120 telegram_bot.py:420
+#: telegram_bot.py:141 telegram_bot.py:466
 msgid "Add admin"
 msgstr ""
 
-#: telegram_bot.py:139
+#: telegram_bot.py:153
+msgid "Please send admin telegram_id in following format: admin <ID>"
+msgstr ""
+
+#: telegram_bot.py:169
 msgid "Number of users: "
 msgstr ""
 
-#: telegram_bot.py:140
+#: telegram_bot.py:170
 msgid "Number of games: "
 msgstr ""
 
-#: telegram_bot.py:156
+#: telegram_bot.py:186
 msgid "User ID: "
 msgstr ""
 
-#: telegram_bot.py:157
+#: telegram_bot.py:187
 msgid "Username: "
 msgstr ""
 
-#: telegram_bot.py:158
+#: telegram_bot.py:188
 msgid "Language: "
 msgstr ""
 
-#: telegram_bot.py:163
+#: telegram_bot.py:193
 msgid "Title: "
 msgstr ""
 
-#: telegram_bot.py:164
+#: telegram_bot.py:194
 msgid "Rank: "
 msgstr ""
 
-#: telegram_bot.py:165
+#: telegram_bot.py:195
 msgid "Score: "
 msgstr ""
 
-#: telegram_bot.py:175 telegram_bot.py:218
+#: telegram_bot.py:205 telegram_bot.py:248
 msgid "Please send game URL:"
 msgstr ""
 
-#: telegram_bot.py:187
+#: telegram_bot.py:217
 msgid "Please send your score:"
 msgstr ""
 
-#: telegram_bot.py:201
+#: telegram_bot.py:231
 msgid "Please wait a moment..."
 msgstr ""
 
-#: telegram_bot.py:210
+#: telegram_bot.py:240
 msgid "You are banned!"
 msgstr ""
 
-#: telegram_bot.py:251
+#: telegram_bot.py:281
 msgid "Game name: "
 msgstr ""
 
-#: telegram_bot.py:252
+#: telegram_bot.py:282
 msgid "Your rank: "
 msgstr ""
 
-#: telegram_bot.py:253
+#: telegram_bot.py:283
 msgid "Your record: "
 msgstr ""
 
-#: telegram_bot.py:290
+#: telegram_bot.py:332
 msgid "Language changed to english."
 msgstr ""
 
-#: telegram_bot.py:291 telegram_bot.py:303 telegram_bot.py:361
-#: telegram_bot.py:413
+#: telegram_bot.py:333 telegram_bot.py:345 telegram_bot.py:407
+#: telegram_bot.py:459
 msgid "فارسی"
 msgstr ""
 
-#: telegram_bot.py:291 telegram_bot.py:303 telegram_bot.py:361
-#: telegram_bot.py:414
+#: telegram_bot.py:333 telegram_bot.py:345 telegram_bot.py:407
+#: telegram_bot.py:460
 msgid "English"
 msgstr ""
 
-#: telegram_bot.py:302
+#: telegram_bot.py:344
 msgid "Language changed to persian."
 msgstr ""
 
-#: telegram_bot.py:323 telegram_bot.py:415
+#: telegram_bot.py:365 telegram_bot.py:461
 msgid "New game"
 msgstr ""
 
-#: telegram_bot.py:323
+#: telegram_bot.py:365 telegram_bot.py:467
 msgid "Remove game"
 msgstr ""
 
-#: telegram_bot.py:325
+#: telegram_bot.py:367
 msgid "Please select your game:"
 msgstr ""
 
-#: telegram_bot.py:362
+#: telegram_bot.py:408
 msgid "Please select your language:"
 msgstr ""
 
-#: telegram_bot.py:370 telegram_bot.py:410
+#: telegram_bot.py:416 telegram_bot.py:456
 msgid "Settings"
 msgstr ""
 
-#: telegram_bot.py:370 telegram_bot.py:412
+#: telegram_bot.py:416 telegram_bot.py:458
 msgid "Games"
 msgstr ""
 
-#: telegram_bot.py:372 telegram_bot.py:416
+#: telegram_bot.py:418 telegram_bot.py:462
 msgid "Admin panel"
 msgstr ""
 
-#: telegram_bot.py:392
+#: telegram_bot.py:438
 msgid "First if you enjoyed this bot please star 🌟 us on our github: "
 msgstr ""
 
-#: telegram_bot.py:393
+#: telegram_bot.py:439
 msgid "Link"
 msgstr ""
 
-#: telegram_bot.py:396
+#: telegram_bot.py:442
 msgid ""
 "You can make a pull request and add your features, or help for "
 "translating and add your native language to this bot."
 msgstr ""
 
-#: telegram_bot.py:409
+#: telegram_bot.py:455
 msgid "menu"
 msgstr ""
 
-#: telegram_bot.py:545
+#: telegram_bot.py:541
+msgid "There is not any games to show."
+msgstr ""
+
+#: telegram_bot.py:565
+msgid "removed successfully."
+msgstr ""
+
+#: telegram_bot.py:568
+msgid "not found!"
+msgstr ""
+
+#: telegram_bot.py:644
 msgid "This user already is admin."
 msgstr ""
 
-#: telegram_bot.py:551
+#: telegram_bot.py:650
 msgid "User previllage escalated successfully."
 msgstr ""
 
-#: telegram_bot.py:558
+#: telegram_bot.py:659
 msgid "Superuser created successfully."
 msgstr ""
 
