@@ -186,7 +186,8 @@ def users_full(update: Update, context: CallbackContext, user_pref=None) -> None
         user_id = "🆔 " + _("User ID: ")
         username = "👤 " + _("Username: ")
         language = "🗣 " + _("Language: ")
-        message += f"🔹\n{user_id}{user.id}\n{username}{user.username}\n{language}{user.language}\n"
+        user_id_href = f"<a href='tg://openmessage?user_id={user.id}'>{user.id}</a>"
+        message += f"🔹\n{user_id}{user_id_href}\n{username}{user.username}\n{language}{user.language}\n"
         message += "\n"
         user_games = Game.query.filter_by(user_id=user.id).all()
         for game in user_games:
