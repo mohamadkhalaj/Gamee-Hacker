@@ -52,7 +52,11 @@ msgstr "ریز اطلاعات کاربران"
 msgid "Add admin"
 msgstr "افزودن ادمین"
 
-#: telegram_bot.py:139
+#: telegram_bot.py:153
+msgid "Please send admin telegram_id in following format: admin <ID>"
+msgstr "لطفا آی دی ادمین را به فرمت روبرو ارسال کنید: admin <ID>"
+
+#: telegram_bot.py:169
 msgid "Number of users: "
 msgstr "تعداد کاربران: "
 
@@ -176,7 +180,19 @@ msgstr "شما میتوانید برای اضافه کردن فیچر های م�
 msgid "menu"
 msgstr "منو"
 
-#: telegram_bot.py:545
+#: telegram_bot.py:541
+msgid "There is not any games to show."
+msgstr "هیچ بازی ای وجود ندارد."
+
+#: telegram_bot.py:565
+msgid "removed successfully."
+msgstr "با موفقیت حذف شد."
+
+#: telegram_bot.py:568
+msgid "not found!"
+msgstr "یافت نشد."
+
+#: telegram_bot.py:644
 msgid "This user already is admin."
 msgstr "این کاربر قبلا ادمین بوده است."
 
