@@ -264,7 +264,7 @@ def get_rank_emoji(rank):
 
 def create_new_game(url, chat_id, image, name, rank, record):
     logger.info(f"NEW GAME CREATED: {chat_id}")
-    game = Game.query.filter(user_id=chat_id, url=url).first()
+    game = Game.query.filter_by(user_id=chat_id, url=url).first()
     if game:
         if record >= game.score:
             game.score = record
