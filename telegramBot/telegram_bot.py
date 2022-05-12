@@ -264,9 +264,21 @@ def get_rank_emoji(rank):
 
 def create_new_game(url, chat_id, image, name, rank, record):
     logger.info(f"NEW GAME CREATED: {chat_id}")
-    new_game = Game(user_id=chat_id, title=name, url=url, photo_url=image, score=record, rank=rank)
-    db.session.add(new_game)
-    db.session.commit()
+    game = Game.query.filter(user_id=chat_id, url=url).first()
+    if game:
+        if record >= game.score:
+            game.score = record
+            game.rank = rank
+            game.title = name
+            game.photo_url = image
+            db.session.commit()
+        new_game = game
+    else:
+        new_game = Game(
+            user_id=chat_id, title=name, url=url, photo_url=image, score=record, rank=rank
+        )
+        db.session.add(new_game)
+        db.session.commit()
     return new_game
 
 
