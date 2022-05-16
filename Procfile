@@ -1,2 +1,1 @@
-release: cd telegramBot && export FLASK_APP='models.py' && flask db init && flask db migrate && flask db upgrade
-worker: cd telegramBot && python3 telegram_bot.py
+worker: cd telegramBot && export FLASK_APP='models.py' && flask db init && flask db migrate && flask db upgrade && python3 telegram_bot.py
