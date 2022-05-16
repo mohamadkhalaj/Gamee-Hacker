@@ -110,7 +110,7 @@ def user_preferences(func):
 def admin_required(func):
     @functools.wraps(func)
     def wrapper_admin_required(*args, **kwargs):
-        chat_id = args[0]["message"]["chat"]["id"]
+        chat_id = str(args[0]["message"]["chat"]["id"])
         user = get_user(chat_id)
         if user.is_admin:
             value = func(*args, **kwargs)
@@ -273,7 +273,7 @@ def send_user_game_info(update, context, user_pref, game_object):
     message = user_game_status(user_pref["lang"], name, rank, record)
     new_message = add_footer(context, message)
     context.bot.send_photo(
-        photo=image, caption=new_message, parse_mode="html", chat_id=update.message.chat_id
+        photo=image, caption=new_message, parse_mode="html", chat_id=str(update.message.chat_id)
     )
 
 
