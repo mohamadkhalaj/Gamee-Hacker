@@ -22,7 +22,7 @@ db.init_app(app)
 
 
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(255), primary_key=True)
     is_admin = db.Column(db.Boolean, default=False)
     username = db.Column(db.String(255), nullable=True, default=None)
     game = db.relationship("Game", backref="user", lazy=True)
