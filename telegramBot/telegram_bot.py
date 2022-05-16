@@ -84,11 +84,11 @@ def user_preferences(func):
     @functools.wraps(func)
     def wrapper_user_preferences(*args, **kwargs):
         try:
-            chat_id = args[0]["message"]["chat"]["id"]
+            chat_id = str(args[0]["message"]["chat"]["id"])
             username = args[0]["message"]["chat"]["username"]
             message = args[0]["message"]["text"]
         except TypeError:
-            chat_id = args[0]["callback_query"]["message"]["chat"]["id"]
+            chat_id = str(args[0]["callback_query"]["message"]["chat"]["id"])
             username = args[0]["callback_query"]["message"]["chat"]["username"]
             message = args[0]["callback_query"]["message"]["text"]
         language = get_user_language(chat_id)
