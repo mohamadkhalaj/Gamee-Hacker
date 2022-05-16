@@ -1,4 +1,5 @@
 import os
+
 from datetime import datetime
 
 from decouple import config as env
@@ -39,4 +40,4 @@ class Game(db.Model):
     photo_url = db.Column(db.String(255))
     score = db.Column(db.Integer)
     rank = db.Column(db.Integer)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    user_id = db.Column(db.String(255), db.ForeignKey("user.id"), nullable=False)
