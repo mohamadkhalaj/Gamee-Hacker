@@ -582,10 +582,11 @@ def get_game_by_id(id):
 
 
 def check_user_exists(chat_id):
-    user = User.query.filter_by(id=chat_id).first()
-    if not user:
-        return False
-    return True
+    with app.app_context():
+        user = User.query.filter_by(id=chat_id).first()
+        if not user:
+            return False
+        return True
 
 
 def create_user(user_pref):
