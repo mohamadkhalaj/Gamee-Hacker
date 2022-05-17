@@ -98,6 +98,8 @@ def user_preferences(func):
             "username": username,
             "message": message,
         }
+        if not check_user_exists(chat_id):
+            create_user(user_pref) 
         args = list(args)
         args.append(user_pref)
         args = tuple(args)
@@ -577,6 +579,13 @@ def get_game_by_id(id):
     if game:
         return game
     return None
+
+
+def check_user_exists(chat_id):
+    user = User.query.filter_by(id=chat_id).first()
+    if not user:
+        return False
+    return True
 
 
 def create_user(user_pref):
