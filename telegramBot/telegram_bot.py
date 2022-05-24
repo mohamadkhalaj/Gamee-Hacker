@@ -40,9 +40,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def divide_chunks(keyboard, n):
-    for i in range(0, len(keyboard), n):
-        yield keyboard[i : i + n]
+def divide_chunks(string_or_list, n):
+    for i in range(0, len(string_or_list), n):
+        yield string_or_list[i : i + n]
 
 
 def is_url(str):
@@ -99,7 +99,7 @@ def user_preferences(func):
             "message": message,
         }
         if not check_user_exists(chat_id):
-            create_user(user_pref) 
+            create_user(user_pref)
         args = list(args)
         args.append(user_pref)
         args = tuple(args)
@@ -178,6 +178,34 @@ def users_summery(update: Update, context: CallbackContext, user_pref=None) -> N
     update.message.reply_text(message)
 
 
+def chunck_tel_messages(text, chunck=4096):
+    start = 0
+    texts = []
+
+    while True:
+        chuncked_text, start = clean_chunck(text, start, chunck)
+        if len(chuncked_text) == 0:
+            break
+        texts.append(chuncked_text)
+
+    return texts
+
+
+def clean_chunck(text, start, chunck):
+    text = text[start : start + chunck]
+    end_text = chunck
+    while not validata_tags(text):
+        end_text = text.rfind("<a")
+        text = text[0:end_text]
+    return text, end_text + start
+
+
+def validata_tags(text):
+    open_tag = text.count("<a")
+    closed_tag = text.count("</a>")
+    return open_tag == closed_tag
+
+
 @admin_required
 @user_preferences
 def users_full(update: Update, context: CallbackContext, user_pref=None) -> None:
@@ -189,7 +217,7 @@ def users_full(update: Update, context: CallbackContext, user_pref=None) -> None
         username = "👤 " + _("Username: ")
         language = "🗣 " + _("Language: ")
         user_id_href = f"<a href='tg://openmessage?user_id={user.id}'>{user.id}</a>"
-        username_with_sign = f'@{user.username}' if user.username else "-"
+        username_with_sign = f"@{user.username}" if user.username else "-"
         message += f"🔹\n{user_id}{user_id_href}\n{username}{username_with_sign}\n{language}{user.language}\n"
         message += "\n"
         user_games = Game.query.filter_by(user_id=user.id).all()
@@ -200,7 +228,9 @@ def users_full(update: Update, context: CallbackContext, user_pref=None) -> None
             href = f"<a href='{game.url}'>{game.title}</a>"
             message += f"🔻\n{game_title}{href}\n{game_rank}{game.rank}\n{game_score}{game.score}\n"
 
-    update.message.reply_text(message, parse_mode="html", disable_web_page_preview=True)
+    messages = chunck_tel_messages(message)
+    for message in messages:
+        update.message.reply_text(message, parse_mode="html", disable_web_page_preview=True)
 
 
 @user_preferences
@@ -570,7 +600,7 @@ def call_back(update: Update, context: CallbackContext, user_pref=None) -> None:
             query.edit_message_text(text=f"{game_name} {remove_message}")
         else:
             not_found_message = _("not found!")
-            query.edit_message_text(text=f"{game_name} {not_found_message}")
+            query.edit_message_text(text=f"{not_found_message}")
         games(update, context)
 
 
