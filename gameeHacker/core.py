@@ -65,8 +65,15 @@ class GameeHacker:
         response = requests.post(
             "https://api.service.gameeapp.com/", headers=headers, data=json_data
         ).json()
+
+        assert self.validate_token(response), "Invalid Token."
         user_creds = response["result"]
         return user_creds
+
+    def validate_token(self, response):
+        if response.get('result'):
+            return True
+        return False
 
     def get_user_auth_token(self):
         return self.user_creds["tokens"]["authenticate"]
