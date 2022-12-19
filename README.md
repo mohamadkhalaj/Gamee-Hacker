@@ -1,5 +1,6 @@
 # Gamee-Hacker
-The most advanced telegram games (gamee) hacker on github.
+The most advanced telegram games (gamee) hacker on github. </br>
+Donate❤️: https://t.me/Gamee_donation 
 
 # Usage:
 ```
