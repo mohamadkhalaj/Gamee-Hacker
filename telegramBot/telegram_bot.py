@@ -8,7 +8,6 @@ from collections import deque
 from babel.support import Translations
 from decouple import config as env
 from telegram import (
-    Bot,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     ReplyKeyboardMarkup,
