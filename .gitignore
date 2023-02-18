@@ -1,5 +1,7 @@
 *.vscode
 *.pyc
+.Ds_store
+.cloud
 test.py
 telegramBot/.env
 db.sqlite
