@@ -8,6 +8,7 @@ from collections import deque
 from babel.support import Translations
 from decouple import config as env
 from telegram import (
+    Bot,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     ReplyKeyboardMarkup,
@@ -109,6 +110,29 @@ def user_preferences(func):
     return wrapper_user_preferences
 
 
+def is_user_joined_channel(func):
+    @functools.wraps(func)
+    def wrapper_is_user_joined_channel(*args, **kwargs):
+        user_id = str(args[0]["message"]["chat"]["id"])
+        # Get the chat status of the user in the channel
+        chat_member = args[1].bot.get_chat_member(chat_id="@Gamee_donation", user_id=int(user_id))
+        # Check if the user is a member of the channel
+        if chat_member.status == "left":
+            # Prompt the user to join the channel
+            language = get_user_language(user_id)
+            _ = Translations.load("locales", [language]).gettext
+            args[0].message.reply_text(
+                _(
+                    "Please join the channel @Gamee_donation to continue.\nAfter you've joined the channel, just resend your score."
+                )
+            )
+        else:
+            value = func(*args, **kwargs)
+            return value
+
+    return wrapper_is_user_joined_channel
+
+
 def admin_required(func):
     @functools.wraps(func)
     def wrapper_admin_required(*args, **kwargs):
@@ -154,6 +178,50 @@ def create_admin(update: Update, context: CallbackContext, user_pref=None) -> No
     _ = Translations.load("locales", [user_pref["lang"]]).gettext
     message = _("Please send admin telegram_id in following format: admin <ID>")
     update.message.reply_text(message)
+
+
+@user_preferences
+def donate_us(update: Update, context: CallbackContext, user_pref=None) -> None:
+    _ = Translations.load("locales", [user_pref["lang"]]).gettext
+    message = _(
+        """
+Hello dear friend 👋
+This bot is open source, so anyone can run it and use it via a server (for personal and public use).
+
+And this bot continued to work completely free of charge for the few months it was active. No money was taken from my pocket or yours, and it was supposed to continue like this so everyone could use it and enjoy it 🦄
+
+But the free server that this bot used to run no longer provides free service: https://help.heroku.com/RSBRUH58/removal-of-heroku-free-product-plans-faq
+
+And I had become indifferent to this bot. However, upon request from several friends, I will put a wallet address for your donations. The bot will continue its activity for free if the donation is paid and the service fee is paid.
+
+In some channels, some people profit from this free bot by charging users a fee to hack games!👀
+
+📍 @Gamee_donation ❤️
+📍 @GameeHacker_bot 🎮
+	"""
+    )
+
+    wallet = """
+💵 ETH (ERC20) 👇
+0x2fd31A0FF4Fc7b10dd8DB919AEb1762927998595
+
+💵 BINANCE SMART CHAIN (BEP20) 👇
+0x2fd31A0FF4Fc7b10dd8DB919AEb1762927998595
+
+💵 TRX TRON (TRC20) (ONLY USDT) 👇 
+TTNS6i8F6Awewm7Ps2jJfbACdo9n3qBGwq
+
+💵 BTC 👇 
+bc1q9wd96jus3pqyn6tvs786we8k24622apymyq2fj
+
+💵 DOGE COIN 👇
+D5up12Y3HxUVgokMtFKcT56HMckDJJMb1r
+
+📍 @Gamee_donation ❤️
+📍 @GameeHacker_bot 🎮
+	"""
+    update.message.reply_text(message)
+    update.message.reply_text(wallet)
 
 
 @admin_required
@@ -253,6 +321,7 @@ def get_game_url(update: Update, context: CallbackContext, user_pref=None) -> No
 
 
 @user_preferences
+@is_user_joined_channel
 def start_hacking(update: Update, context: CallbackContext, user_pref=None) -> None:
     _ = Translations.load("locales", [user_pref["lang"]]).gettext
     score = int(user_pref["message"].strip())
@@ -447,7 +516,7 @@ def change_language(update: Update, context: CallbackContext, user_pref=None) ->
 @user_preferences
 def main_menu(update: Update, context: CallbackContext, user_pref=None) -> None:
     _ = Translations.load("locales", user_pref["lang"]).gettext
-    keyboard = [[_("Settings") + " ⚙️", _("Games") + " 🧩"]]
+    keyboard = [[_("Settings") + " ⚙️", _("Games") + " 🧩"], [_("Donate us") + " ❤️"]]
     if get_user(user_pref["chat_id"]).is_admin:
         keyboard.append([_("Admin panel") + " 👤"])
     message = _("Please select one item:")
@@ -499,6 +568,7 @@ def function_caller(update: Update, context: CallbackContext, user_pref=None) ->
         _("Get full data") + " 🗄": users_full,
         _("Add admin") + " ➕": create_admin,
         _("Remove game") + " ❌": remove_game,
+        _("Donate us") + " ❤️": donate_us,
     }
     function = functions.get(update.message.text, None)
     with app.app_context():
