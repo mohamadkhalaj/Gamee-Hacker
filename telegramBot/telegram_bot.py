@@ -1,4 +1,4 @@
-ipmport functools
+import functools
 import logging
 import random
 import re
