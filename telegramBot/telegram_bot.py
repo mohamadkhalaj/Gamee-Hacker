@@ -7,6 +7,8 @@ from collections import deque
 
 from babel.support import Translations
 from decouple import config as env
+from models import Game, User, app, db
+from numpy.random import normal as np_normal
 from telegram import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
@@ -21,8 +23,6 @@ from telegram.ext import (
     MessageHandler,
     Updater,
 )
-
-from models import Game, User, app, db
 
 try:
     from ..gameeHacker.core import GameeHacker
@@ -319,6 +319,12 @@ def get_game_url(update: Update, context: CallbackContext, user_pref=None) -> No
     update.message.reply_text(message)
 
 
+def generate_random_game_play_time(score):
+    sigma = random.randint(5, 10)
+    time = abs(int(np_normal(score, sigma, 1)[0])) | sigma
+    return time
+
+
 @user_preferences
 @is_user_joined_channel
 def start_hacking(update: Update, context: CallbackContext, user_pref=None) -> None:
@@ -332,7 +338,9 @@ def start_hacking(update: Update, context: CallbackContext, user_pref=None) -> N
         )
         message = _("Please wait a moment...")
         update.message.reply_text(message)
-        game_obj = GameeHacker(url, score, random.randint(10, 1000))
+        time = generate_random_game_play_time(score)
+        print(time)
+        game_obj = GameeHacker(url, score, time)
         game_obj.send_score()
         image = game_obj.get_game_img()
         name = game_obj.get_game_name()
