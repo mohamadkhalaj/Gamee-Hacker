@@ -1,4 +1,4 @@
-import functools
+ipmport functools
 import logging
 import random
 import re
@@ -339,7 +339,6 @@ def start_hacking(update: Update, context: CallbackContext, user_pref=None) -> N
         message = _("Please wait a moment...")
         update.message.reply_text(message)
         time = generate_random_game_play_time(score)
-        print(time)
         game_obj = GameeHacker(url, score, time)
         game_obj.send_score()
         image = game_obj.get_game_img()
