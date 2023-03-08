@@ -320,8 +320,18 @@ def get_game_url(update: Update, context: CallbackContext, user_pref=None) -> No
 
 
 def generate_random_game_play_time(score):
-    sigma = random.randint(5, 10)
-    time = abs(int(np_normal(score, sigma, 1)[0])) | sigma
+    if score < 100:
+        time = random.randint(1, 6)
+    elif score < 1000:
+        time = random.randint(6, 16)
+    elif score < 10000:
+        time = random.randint(16, 41)
+    elif score < 100000:
+        time = random.randint(41, 71)
+    elif score < 1000000:
+        time = random.randint(71, 121)
+    else:
+        time = random.randint(121, 301)
     return time
 
 
