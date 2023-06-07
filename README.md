@@ -39,12 +39,17 @@ First you should get Telegram API token from botFather.
 cd telegramBot
 mv .env-sample .env
 ```
-
 ### Step 3
 After running above commands you should copy your Telegram token in `.env` file and put it in `TELEGRAM_TOKEN`.
 after that create a desired random string for `SECRET_KEY`.
 
 ### Step 4
+Create a virtual-environment and install dependencies.
+```
+pip install -r requirements.txt
+```
+
+### Step 5
 ```
 export FLASK_APP='models.py'
 cd telegramBot
