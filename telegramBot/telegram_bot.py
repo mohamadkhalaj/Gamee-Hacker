@@ -8,7 +8,6 @@ from collections import deque
 from babel.support import Translations
 from decouple import config as env
 from models import Game, User, app, db
-from numpy.random import normal as np_normal
 from telegram import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
@@ -320,18 +319,7 @@ def get_game_url(update: Update, context: CallbackContext, user_pref=None) -> No
 
 
 def generate_random_game_play_time(score):
-    if score < 100:
-        time = random.randint(1, 6)
-    elif score < 1000:
-        time = random.randint(6, 16)
-    elif score < 10000:
-        time = random.randint(16, 41)
-    elif score < 100000:
-        time = random.randint(41, 71)
-    elif score < 1000000:
-        time = random.randint(71, 121)
-    else:
-        time = random.randint(121, 301)
+    time = random.randint(10, 600)
     return time
 
 
