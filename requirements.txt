@@ -19,7 +19,6 @@ mypy-extensions==0.4.3
 numpy==1.24.2
 pathspec==0.9.0
 platformdirs==2.5.2
-psycopg2==2.9.3
 pycodestyle==2.8.0
 python-decouple==3.6
 python-telegram-bot==13.11
@@ -38,4 +37,3 @@ tzlocal==4.2
 urllib3==1.26.9
 Werkzeug==2.1.2
 zipp==3.8.0
-psycopg2==2.9.3
