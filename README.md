@@ -22,12 +22,6 @@ Args                 Description                       Default
 --get-name       Name of game                          False 
 
 ```
-### Installation (Optional)
-For installing this script and run from anywhere of your terminal, please follow below steps:
-```
-chmod +x install.sh
-sudo ./install.sh
-```
 
 # 2 Telegram bot
 
